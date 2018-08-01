@@ -12,9 +12,9 @@ namespace Prototype1.Packets.Handlers
 
         public override void Handle(byte[] data, ClientConnectionInfo connection)
         {
-            int protocolVersion = BitConverter.ToInt32(data, 1);
+            var protocolVersion = BitConverter.ToInt32(data, 1);
             Console.WriteLine("Handling a Handshake Request from client on {0} with protocol version {1}", connection.Peer.GetRemoteAddress(), protocolVersion);
-            GameServer.Instance.PacketSenderManager.SendHandshakeResponse(connection, protocolVersion == 1 ? (byte)1 : (byte)0);
+            PacketSenderManager.SendHandshakeResponse(connection, protocolVersion == 1 ? (byte)1 : (byte)0);
         }
     }
 }

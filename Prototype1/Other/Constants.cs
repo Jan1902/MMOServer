@@ -10,6 +10,6 @@ namespace Prototype1
     {
         public const int MaxPlayers = 10;
         public const int Port = 19022;
-        public const int MaxChannels = 1;
+        public const int HostEventTimeout = 20;
     }
 }

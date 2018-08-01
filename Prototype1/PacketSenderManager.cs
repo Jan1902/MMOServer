@@ -8,14 +8,18 @@ namespace Prototype1
 {
     class PacketSenderManager
     {
-        public void SendHandshakeResponse(ClientConnectionInfo connection, byte responseCode) //connection == null -> broadcast
+        public static void SendHandshakeResponse(ClientConnectionInfo connection, byte responseCode) //connection == null -> broadcast
         {
-            if(connection != null)
-            {
-                List<byte> bytes = new List<byte>();
-                bytes.Add(1);
-                bytes.Add(responseCode);
+            var bytes = new List<byte>();
+            bytes.Add(1);
+            bytes.Add(responseCode);
+
+            if (connection != null)
                 connection.Peer.Send(1, bytes.ToArray(), ENet.PacketFlags.Reliable);
+            else
+            {
+                foreach(ClientConnectionInfo con in GameServer.Instance.Connections)
+                    con.Peer.Send(1, bytes.ToArray(), ENet.PacketFlags.Reliable);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace Prototype1
     class GameServer
     {
         private Host _host;
-        private bool _stopRequested = false;
+        private bool _stopRequested;
 
         public List<ClientConnectionInfo> Connections { get; private set; }
 
@@ -24,7 +24,6 @@ namespace Prototype1
         public static readonly GameServer Instance = new GameServer();
 
         public PacketHandlerManager PacketHandlerManager { get; private set; }
-        public PacketSenderManager PacketSenderManager { get; private set; }
 
         /// <summary>
         /// Initializes the GameServer
@@ -33,7 +32,6 @@ namespace Prototype1
         {
             PacketHandlerManager = new PacketHandlerManager();
             Connections = new List<ClientConnectionInfo>();
-            PacketSenderManager = new PacketSenderManager();
 
             PacketHandlerManager.SetupHandlers();
 
@@ -48,7 +46,7 @@ namespace Prototype1
         {
             while (!_stopRequested)
             {
-                while (_host.Service(20, out Event enetEvent))
+                while (_host.Service(Constants.HostEventTimeout, out Event enetEvent))
                 {
                     switch (enetEvent.Type)
                     {
@@ -66,6 +64,9 @@ namespace Prototype1
                             Console.WriteLine("Client on {0} disconnected", enetEvent.Peer.GetRemoteAddress());
                             Connections.Remove(GetConnectionInfoByPeer(enetEvent.Peer));
                             break;
+                        default:
+                            Console.WriteLine("Invalid event called");
+                            break;
                     }
                 }
                 Thread.Sleep(1);
@@ -74,7 +75,7 @@ namespace Prototype1
 
         public ClientConnectionInfo GetConnectionInfoByPeer(Peer peer)
         {
-            return Connections.Where(con => con.Peer.GetRemoteAddress().Port == peer.GetRemoteAddress().Port).First();
+            return Connections.First(con => con.Peer.GetRemoteAddress().Port == peer.GetRemoteAddress().Port);
         }
     }
 }

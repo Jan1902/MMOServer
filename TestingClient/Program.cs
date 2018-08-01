@@ -10,12 +10,12 @@ namespace TestingClient
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Host host = new Host();
+            var host = new Host();
             host.InitializeClient(1);
 
-            Peer peer = host.Connect("127.0.0.1", 19022, 0);
+            var peer = host.Connect("127.0.0.1", 19022, 0);
 
             while (host.Service(100, out Event enetEvent))
             {
@@ -30,9 +30,13 @@ namespace TestingClient
                         //handle the data
                         enetEvent.Packet.Dispose();
                         break;
+                    default:
+                        Console.WriteLine("invalid event");
+                        break;
                 }
             }
             Console.ReadLine();
+            host.Dispose();
             peer.Disconnect(0);
         }
     }
