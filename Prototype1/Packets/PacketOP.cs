@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace MMOServer
+
+namespace Prototype1
 {
-    class Program
+    enum PacketOP : byte
     {
-        static void Main(string[] args)
-        {
-            
-        }
+        HandshakeRequest = 0x00,
+        HandshakeResponse = 0x01
     }
 }

@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace MMOServer
+
+namespace Prototype1
 {
-    class Program
+    interface IPacketHandler
     {
-        static void Main(string[] args)
-        {
-            
-        }
+        void Handle(byte[] data, ClientConnectionInfo connection);
     }
 }
