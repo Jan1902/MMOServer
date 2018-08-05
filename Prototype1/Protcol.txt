@@ -1,0 +1,3 @@
+﻿0 - SB Handshake Request
+1 - CB Handshake Response
+2 - CB Entity Spawn

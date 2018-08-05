@@ -1,17 +1,12 @@
-﻿using ENet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Prototype1.Networking;
 
-namespace Prototype1
+namespace Prototype1.Main
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            GameServer.Instance.Init();
+            var gameServer = new GameServer();
         }
     }
 }

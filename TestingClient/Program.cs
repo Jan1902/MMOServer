@@ -17,7 +17,7 @@ namespace TestingClient
 
             var peer = host.Connect("127.0.0.1", 19022, 0);
 
-            while (host.Service(100, out Event enetEvent))
+            while (host.Service(20, out Event enetEvent))
             {
                 switch (enetEvent.Type)
                 {

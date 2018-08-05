@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Prototype1.Networking;
 
-namespace Prototype1
+namespace Prototype1.Packets
 {
     interface IPacketHandler
     {
