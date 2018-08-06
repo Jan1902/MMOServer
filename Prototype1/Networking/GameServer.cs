@@ -23,8 +23,9 @@ namespace Prototype1.Networking
         public PacketSenderManager PacketSenderManager { get; private set; }
 
         //maybe move this somewhere else at some point
-        private int _nextEntityId = 0;
-        public int NextEntityID { get
+        private int _nextEntityId;
+        public int NextEntityID {
+            get
             {
                 _nextEntityId++;
                 return _nextEntityId;
