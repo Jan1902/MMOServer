@@ -32,7 +32,7 @@ namespace MMOServer.Config
         public string DatabasePassword { get; set; } = "password";
     }
 
-    public class SettingAttribute : Attribute
+    public sealed class SettingAttribute : Attribute
     {
         public string Section { get; private set; }
 

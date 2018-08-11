@@ -67,6 +67,8 @@
     <Compile Include="ConsoleStuff\ConsoleCommand.cs" />
     <Compile Include="ConsoleStuff\ConsoleManager.cs" />
     <Compile Include="Database\DatabaseManager.cs" />
+    <Compile Include="Encryption\ClientEncryptionInfo.cs" />
+    <Compile Include="Encryption\EncryptionManager.cs" />
     <Compile Include="EventBusSystem\EventBus.cs" />
     <Compile Include="EventBusSystem\GameEvent.cs" />
     <Compile Include="EventBusSystem\GameEvents\EntityEvent.cs" />
@@ -81,11 +83,14 @@
     <Compile Include="ConsoleStuff\ConsoleUtils.cs" />
     <Compile Include="Other\Logger.cs" />
     <Compile Include="Other\Vector.cs" />
+    <Compile Include="Packets\Handlers\EncryptionRequestHandler.cs" />
     <Compile Include="Packets\Handlers\HandshakeRequestHandler.cs" />
     <Compile Include="Packets\IPacketHandler.cs" />
     <Compile Include="Packets\Packet.cs" />
+    <Compile Include="Packets\PacketDefinitions\CB\EncryptionResponse.cs" />
     <Compile Include="Packets\PacketDefinitions\CB\EntitySpawn.cs" />
     <Compile Include="Packets\PacketDefinitions\CB\HandshakeResponse.cs" />
+    <Compile Include="Packets\PacketDefinitions\SB\EncryptionRequest.cs" />
     <Compile Include="Packets\PacketDefinitions\SB\HandshakeRequest.cs" />
     <Compile Include="Packets\PacketHandlerBase.cs" />
     <Compile Include="Packets\PacketHandlerManager.cs" />

@@ -2,6 +2,7 @@ using ENet;
 using MMOServer.ConsoleStuff;
 using MMOServer.Game.Entities;
 using MMOServer.Packets.PacketDefinitions.CB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,15 +32,46 @@ namespace MMOServer.Networking
             ConsoleUtils.Info("Sent Handshake Response to client on {0}", connection.Peer.GetRemoteAddress());
         }
 
+        public void SendEncryptionResponse(ClientConnectionInfo connection, EncryptionResponseCode responseCode, byte[] key)
+        {
+            var handShakeResponse = new EncryptionResponse
+            {
+                ResponseCode = responseCode,
+                AESKey = key
+            };
+
+            if (responseCode == EncryptionResponseCode.OK)
+                RSAEncryptedSend(connection, handShakeResponse.Create());
+            else
+                DefaultSend(connection, handShakeResponse.Create());
+
+            ConsoleUtils.Info("Sent Encryption Response to client on {0}", connection.Peer.GetRemoteAddress());
+        }
+
         private void DefaultSend(ClientConnectionInfo connection, byte[] bytes)
         {
             if (connection != null)
-                connection.Peer.Send(1, bytes.ToArray(), PacketFlags.Reliable);
+            {
+                if(connection.Encryption.AESEncryptionEnabled)
+                    connection.Peer.Send(1, _gameServer.EncryptionManager.EncryptDataAES(bytes), PacketFlags.Reliable);
+                else
+                    connection.Peer.Send(1, bytes, PacketFlags.Reliable);
+            }
             else
             {
                 foreach (ClientConnectionInfo con in _gameServer.Connections)
-                    con.Peer.Send(1, bytes.ToArray(), PacketFlags.Reliable);
+                {
+                    if (con.Encryption.AESEncryptionEnabled)
+                        con.Peer.Send(1, _gameServer.EncryptionManager.EncryptDataAES(bytes), PacketFlags.Reliable);
+                    else
+                        con.Peer.Send(1, bytes, PacketFlags.Reliable);
+                }
             }
+        }
+
+        private void RSAEncryptedSend(ClientConnectionInfo connection, byte[] bytes)
+        {
+            connection.Peer.Send(1, connection.Encryption.EncryptData(bytes), PacketFlags.Reliable);
         }
 
         public void SendEntitySpawn(List<ClientConnectionInfo> connections, Entity entity)

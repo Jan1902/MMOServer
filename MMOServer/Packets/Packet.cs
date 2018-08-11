@@ -54,6 +54,11 @@ namespace MMOServer.Packets
             _bytes.Add(value);
         }
 
+        public void Write(byte[] value)
+        {
+            _bytes.AddRange(value);
+        }
+
         public int ReadInt()
         {
             var value = BitConverter.ToInt32(_bytes.ToArray(), 0);
@@ -86,6 +91,17 @@ namespace MMOServer.Packets
         {
             var value = _bytes[0];
             _bytes.RemoveRange(0, sizeof(byte));
+            return value;
+        }
+
+        public byte[] ReadBytes(int count)
+        {
+            var value = new byte[count];
+            for (int i = 0; i < count; i++)
+            {
+                value[i] = _bytes[i];
+            }
+            _bytes.RemoveRange(0, count);
             return value;
         }
 

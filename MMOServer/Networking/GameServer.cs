@@ -2,6 +2,7 @@ using ENet;
 using MMOServer.Config;
 using MMOServer.ConsoleStuff;
 using MMOServer.Database;
+using MMOServer.Encryption;
 using MMOServer.EventBusSystem;
 using MMOServer.Game;
 using MMOServer.Other;
@@ -30,6 +31,7 @@ namespace MMOServer.Networking
         public ConsoleManager ConsoleManager { get; private set; }
         public ConfigManager ConfigManager { get; private set; }
         public DatabaseManager DatabaseManager { get; private set; }
+        public EncryptionManager EncryptionManager { get; private set; }
 
         public EventBus EventBus { get; private set; }
 
@@ -56,6 +58,7 @@ namespace MMOServer.Networking
             ConsoleManager = new ConsoleManager(this);
             ConfigManager = new ConfigManager();
             DatabaseManager = new DatabaseManager(this);
+            EncryptionManager = new EncryptionManager();
 
             Worlds = new List<World>
             {
@@ -85,7 +88,7 @@ namespace MMOServer.Networking
             _stopRequested = true;
             ConfigManager.Save();
             DatabaseManager.Disconnect();
-            
+            DisconnectAllClients();
 
             ConsoleUtils.Info("Press enter to close");
             Console.ReadLine();
