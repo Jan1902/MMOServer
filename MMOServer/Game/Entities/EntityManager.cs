@@ -1,5 +1,9 @@
+using MMOServer.ConsoleStuff;
+using MMOServer.EventBusSystem;
+using MMOServer.EventBusSystem.GameEvents;
 using MMOServer.Networking;
 using MMOServer.Other;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +12,7 @@ namespace MMOServer.Game.Entities
     /// <summary>
     /// The Entity Manager, responsible for taking care of high level entity functions
     /// </summary>
-    class EntityManager
+    class EntityManager : IGameManager
     {
         private World _world;
         private GameServer _gameServer;
@@ -25,6 +29,9 @@ namespace MMOServer.Game.Entities
                 return players;
             }
         }
+
+        public List<Type> HandledGameEvents { get => new List<Type> { typeof(EntityEvent) }; }
+
         //Same thing for other entity types
 
         public EntityManager(World world, GameServer gameServer)
@@ -46,6 +53,25 @@ namespace MMOServer.Game.Entities
             Entities.Add(player);
             _gameServer.PacketSenderManager.SendEntitySpawn(Players.Select(p => p.Connection).ToList(), player);
             return player;
+        }
+
+        public void HandleGameEvent(GameEvent gameEvent)
+        {
+            if (gameEvent is EntityEvent entityEvent)
+            {
+                switch (entityEvent.EventType)
+                {
+                    case EventType.EntitySpawned:
+                        if (entityEvent.WorldId != _world.WorldId)
+                            return;
+                        SpawnPlayer(entityEvent.Connection, entityEvent.Position, entityEvent.Rotation, entityEvent.Name, entityEvent.Level, entityEvent.Experience);
+                        ConsoleUtils.Info("Entity Spawned event handled on Entity Manager");
+                        break;
+                    default:
+                        ConsoleUtils.Warning("Invalid internal Game Event on EntityManager");
+                        break;
+                }
+            }
         }
     }
 }

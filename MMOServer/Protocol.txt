@@ -1,0 +1,21 @@
+﻿-- MMOServer Protocol --
+
+-- Packet Structure --
+	byte	OP
+	byte[]	data
+
+-- Packets --
+	- HandshakeRequest	0x00 SB
+		int		ProtocolVersion
+
+	- HandshakeResponse 0x01 CB
+		byte	HandshakeResponseCode
+
+	- EntitySpawn		0x02 CB
+		int		EntityID
+		float	PositionX
+		float	PositionY
+		float	PositionZ
+		float	RotationX
+		float	RotationY
+		flaot	RotationZ

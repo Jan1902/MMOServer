@@ -1,5 +1,8 @@
 using ENet;
+using MMOServer.Config;
 using MMOServer.ConsoleStuff;
+using MMOServer.Database;
+using MMOServer.EventBusSystem;
 using MMOServer.Game;
 using MMOServer.Other;
 using MMOServer.Packets;
@@ -11,7 +14,7 @@ using System.Threading;
 namespace MMOServer.Networking
 {
     /// <summary>
-    /// The Main Game Server class, responsible for storing important data and connection management
+    /// The Main Game Server class, responsible for storing important data and network management
     /// </summary>
     class GameServer
     {
@@ -23,7 +26,12 @@ namespace MMOServer.Networking
 
         public PacketHandlerManager PacketHandlerManager { get; private set; }
         public PacketSenderManager PacketSenderManager { get; private set; }
+
         public ConsoleManager ConsoleManager { get; private set; }
+        public ConfigManager ConfigManager { get; private set; }
+        public DatabaseManager DatabaseManager { get; private set; }
+
+        public EventBus EventBus { get; private set; }
 
         //maybe move this somewhere else at some point
         private int _nextEntityId;
@@ -44,7 +52,10 @@ namespace MMOServer.Networking
 
             PacketHandlerManager = new PacketHandlerManager(this);
             PacketSenderManager = new PacketSenderManager(this);
+
             ConsoleManager = new ConsoleManager(this);
+            ConfigManager = new ConfigManager();
+            DatabaseManager = new DatabaseManager(this);
 
             Worlds = new List<World>
             {
@@ -52,15 +63,19 @@ namespace MMOServer.Networking
             };
             ConsoleUtils.Info("Running {0} world instances", Worlds.Count);
 
+            EventBus = new EventBus(this, Worlds.Select(w => w.EntityManager).ToList<IGameManager>()); //Only the entity managers, for now
+
             _host = new Host();
-            _host.InitializeServer(Constants.Port, Constants.MaxPlayers);
+            _host.InitializeServer(ConfigManager.Settings.Port, ConfigManager.Settings.MaxPlayers);
             ConsoleUtils.Info("Successfully set up and running");
         }
 
         public GameServer()
         {
             Init();
-            NetLoop();
+            new Thread(() => NetLoop()).Start();
+            new Thread(() => PhysicsLoop()).Start();
+            new Thread(() => GameEventLoop()).Start();
         }
 
         public void Shutdown()
@@ -68,11 +83,46 @@ namespace MMOServer.Networking
             ConsoleUtils.Warning("Game Server shutting down");
 
             _stopRequested = true;
-            _host.Dispose();
-            //disconnect all clients
+            ConfigManager.Save();
+            DatabaseManager.Disconnect();
+            
 
             ConsoleUtils.Info("Press enter to close");
             Console.ReadLine();
+        }
+
+        private void DisconnectAllClients()
+        {
+            ConsoleUtils.Info("Disconnecting all clients");
+            foreach(var connection in Connections)
+            {
+                connection.Disconnect();
+            }
+        }
+
+        /// <summary>
+        /// The PhysicsLoop function, responsible for calling all physics and movement calculations
+        /// </summary>
+        private void PhysicsLoop()
+        {
+            while(!_stopRequested)
+            {
+                //TODO: DO MOVEMENT CALCULATIONS HERE
+                Thread.Sleep(1000 / ConfigManager.Settings.PhysicsUpdatesPerSecond);
+            }
+        }
+
+
+        /// <summary>
+        /// The GameEventLoop function, responsible for calling all physics and movement calculations
+        /// </summary>
+        private void GameEventLoop()
+        {
+            while (!_stopRequested)
+            {
+                EventBus.DispatchEvents();
+                Thread.Sleep(1000 / ConfigManager.Settings.GameEventDispatchesPerSecond);
+            }
         }
 
         /// <summary>
@@ -82,21 +132,21 @@ namespace MMOServer.Networking
         {
             while (!_stopRequested)
             {
-                while (_host.Service(Constants.HostEventTimeout, out Event enetEvent))
+                while (_host.Service(ConfigManager.Settings.HostEventTimeout, out Event enetEvent))
                 {
                     switch (enetEvent.Type)
                     {
-                        case EventType.Connect:
+                        case ENet.EventType.Connect:
                             ConsoleUtils.Info("Client connected on {0}", enetEvent.Peer.GetRemoteAddress());
                             Connections.Add(new ClientConnectionInfo(enetEvent.Peer));
                             break;
 
-                        case EventType.Receive:
+                        case ENet.EventType.Receive:
                             PacketHandlerManager.HandleData(enetEvent.Packet.GetBytes(), GetConnectionInfoByPeer(enetEvent.Peer));
                             enetEvent.Packet.Dispose();
                             break;
 
-                        case EventType.Disconnect:
+                        case ENet.EventType.Disconnect:
                             ConsoleUtils.Info("Client on {0} disconnected", enetEvent.Peer.GetRemoteAddress());
                             Connections.Remove(GetConnectionInfoByPeer(enetEvent.Peer));
                             break;
@@ -108,11 +158,17 @@ namespace MMOServer.Networking
                 }
                 Thread.Sleep(1);
             }
+            _host.Dispose();
         }
 
         public ClientConnectionInfo GetConnectionInfoByPeer(Peer peer)
         {
             return Connections.First(con => con.Peer.GetRemoteAddress().Port == peer.GetRemoteAddress().Port);
+        }
+
+        public World GetWorldById(int id)
+        {
+            return Worlds.First(world => world.WorldId == id);
         }
     }
 }

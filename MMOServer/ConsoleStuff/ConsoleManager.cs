@@ -1,6 +1,7 @@
 ﻿using MMOServer.Networking;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace MMOServer.ConsoleStuff
 {
@@ -18,9 +19,10 @@ namespace MMOServer.ConsoleStuff
             RegisterCommand(new ConsoleCommand("stop", "stop", "Shuts down the server", HandleStopCommand, 0));
             RegisterCommand(new ConsoleCommand("help", "help <command>", "Shows the help text for the given command", HandleHelpCommand, 1));
             RegisterCommand(new ConsoleCommand("list", "list <object>", "Lists all the instances of the given object [client, token, player]", HandleListCommand, 1));
+            //TODO: CREATE SETTINGS COMMAND TO CHANGE AND ACCESS CONFIG SETTINGS AT RUNTIME
 
             ConsoleUtils.Info("Console Command Handler set up");
-            Run();
+            new Thread(() => Run()).Start();
         }
 
         private void RegisterCommand(ConsoleCommand command)

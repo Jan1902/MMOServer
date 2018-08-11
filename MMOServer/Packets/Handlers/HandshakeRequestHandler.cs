@@ -1,6 +1,5 @@
 using MMOServer.ConsoleStuff;
 using MMOServer.Networking;
-using MMOServer.Other;
 using MMOServer.Packets.PacketDefinitions.CB;
 using MMOServer.Packets.PacketDefinitions.SB;
 
@@ -25,9 +24,6 @@ namespace MMOServer.Packets.Handlers
             var handshakeRequest = new HandshakeRequest(data);
             ConsoleUtils.Info("Handling a Handshake Request from client on {0}", connection.Peer.GetRemoteAddress());
             _gameServer.PacketSenderManager.SendHandshakeResponse(connection, handshakeRequest.ProtocolVersion == 1 ? HandshakeResponseCode.OK : HandshakeResponseCode.OUT_OF_DATE);
-
-            //just for testing
-            _gameServer.Worlds[0].EntityManager.SpawnPlayer(connection, Vector.Zero(), Vector.Zero(), "Jeff", 1, 0);
         }
     }
 }
