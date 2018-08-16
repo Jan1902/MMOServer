@@ -15,40 +15,24 @@ namespace MMOServer.Other
             ConsoleUtils.Info("Log file set up at {0}", path);
         }
 
-        /// <summary>
-        /// Logs a simple info text to the log file
-        /// </summary>
-        /// <param name="message"></param>
         public static void LogInfo(string message)
         {
             _writer.WriteLine("[INFO] " + DateTime.Now + ": " + message);
             _writer.Flush();
         }
 
-        /// <summary>
-        /// Logs a warning text to the log file
-        /// </summary>
-        /// <param name="message"></param>
         public static void LogWarning(string message)
         {
             _writer.WriteLine("[WARNING] " + DateTime.Now + ": " + message);
             _writer.Flush();
         }
 
-        /// <summary>
-        /// Logs an error text to the log file
-        /// </summary>
-        /// <param name="message"></param>
         public static void LogError(string message)
         {
             _writer.WriteLine("[ERROR] " + DateTime.Now + ": " + message);
             _writer.Flush();
         }
 
-        /// <summary>
-        /// Gets a new valid path to a new log file
-        /// </summary>
-        /// <returns></returns>
         private static string GetNewLogFilePath()
         {
             if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs")))

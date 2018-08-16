@@ -4,9 +4,6 @@ using MMOServer.Game.Entities;
 
 namespace MMOServer.Networking
 {
-    /// <summary>
-    /// The Client Connection Info, responsible for storing network related data about the client
-    /// </summary>
     class ClientConnectionInfo
     {
         public Peer Peer { get; private set; }

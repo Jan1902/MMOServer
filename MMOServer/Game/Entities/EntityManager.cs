@@ -9,9 +9,6 @@ using System.Linq;
 
 namespace MMOServer.Game.Entities
 {
-    /// <summary>
-    /// The Entity Manager, responsible for taking care of high level entity functions
-    /// </summary>
     class EntityManager : IGameManager
     {
         private World _world;
@@ -46,13 +43,12 @@ namespace MMOServer.Game.Entities
             return Entities.First(e => e.EntityID == id);
         }
 
-        public Entity SpawnPlayer(ClientConnectionInfo connection, Vector pos, Vector rot, string name, int level, int experience)
+        private void SpawnPlayer(ClientConnectionInfo connection, Vector pos, Vector rot, string name, int level, int experience)
         {
             var player = new Player(connection, _gameServer.NextEntityID, pos, rot, name, level, experience);
             connection.Player = player;
             Entities.Add(player);
             _gameServer.PacketSenderManager.SendEntitySpawn(Players.Select(p => p.Connection).ToList(), player);
-            return player;
         }
 
         public void HandleGameEvent(GameEvent gameEvent)
@@ -61,7 +57,7 @@ namespace MMOServer.Game.Entities
             {
                 switch (entityEvent.EventType)
                 {
-                    case EventType.EntitySpawned:
+                    case EntityEventType.EntitySpawned:
                         if (entityEvent.WorldId != _world.WorldId)
                             return;
                         SpawnPlayer(entityEvent.Connection, entityEvent.Position, entityEvent.Rotation, entityEvent.Name, entityEvent.Level, entityEvent.Experience);

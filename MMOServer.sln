@@ -5,12 +5,6 @@ VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMOServer", "MMOServer\MMOServer.csproj", "{A5C91553-218C-4EB6-ACFE-9D2F593124BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prototype1", "Prototype1\Prototype1.csproj", "{001058D9-846D-4CDF-97F9-24B23DDC3360}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingClient", "TestingClient\TestingClient.csproj", "{930B141D-BF9C-43B1-97A2-72885077B1B5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prototype Eventbus", "Prototype Eventbus\Prototype Eventbus.csproj", "{9A7A49E0-B08C-415C-8519-DAF54812C12C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,18 +15,6 @@ Global
 		{A5C91553-218C-4EB6-ACFE-9D2F593124BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5C91553-218C-4EB6-ACFE-9D2F593124BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5C91553-218C-4EB6-ACFE-9D2F593124BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{001058D9-846D-4CDF-97F9-24B23DDC3360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{001058D9-846D-4CDF-97F9-24B23DDC3360}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{001058D9-846D-4CDF-97F9-24B23DDC3360}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{001058D9-846D-4CDF-97F9-24B23DDC3360}.Release|Any CPU.Build.0 = Release|Any CPU
-		{930B141D-BF9C-43B1-97A2-72885077B1B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{930B141D-BF9C-43B1-97A2-72885077B1B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{930B141D-BF9C-43B1-97A2-72885077B1B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{930B141D-BF9C-43B1-97A2-72885077B1B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9A7A49E0-B08C-415C-8519-DAF54812C12C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A7A49E0-B08C-415C-8519-DAF54812C12C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A7A49E0-B08C-415C-8519-DAF54812C12C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A7A49E0-B08C-415C-8519-DAF54812C12C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

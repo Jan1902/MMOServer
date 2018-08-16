@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace MMOServer.Encryption
 {
     class ClientEncryptionInfo
     {
-        private RSACryptoServiceProvider _rsaProvider; //RSA is used only once to safely send the AES symetric key to the client for later encryption
+        private RSACryptoServiceProvider _rsaProvider;
 
         public bool RSAEncryptionEnabled { get; private set; }
         public bool AESEncryptionEnabled { get; set; }

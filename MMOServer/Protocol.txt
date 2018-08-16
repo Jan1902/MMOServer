@@ -5,13 +5,33 @@
 	byte[]	data
 
 -- Packets --
-	- HandshakeRequest	0x00 SB
+	- HandshakeRequest		0x00 SB
 		int		ProtocolVersion
 
-	- HandshakeResponse 0x01 CB
+	- HandshakeResponse		0x01 CB
 		byte	HandshakeResponseCode
 
-	- EntitySpawn		0x02 CB
+	- EncryptionRequest		0x02 SB
+		int		KeyLength
+		byte[]	PublicRSAKey
+
+	- EncryptionResponse	0x03 CB
+		byte	EncryptionResponseCOde
+		int		KeyLength
+		byte[]	AESKey
+		int		IVLength
+		byte[]	IV
+
+	- LoginRequest			0x04 SB
+		string	Username
+		string  PasswordHash
+
+	- LoginResponse			0x05 CB
+		byte	LoginResponseCode
+		string	SceneName
+		int		EntityID
+
+	- EntitySpawn			0x06 CB
 		int		EntityID
 		float	PositionX
 		float	PositionY

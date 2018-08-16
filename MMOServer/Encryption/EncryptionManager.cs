@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MMOServer.ConsoleStuff;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MMOServer.Encryption
 {
@@ -22,13 +18,16 @@ namespace MMOServer.Encryption
         {
             _aesProvider = new AesCryptoServiceProvider
             {
-                KeySize = 1024,
-                BlockSize = 512
+                KeySize = 256,
+                BlockSize = 128,
+                Mode = CipherMode.CBC,
+                Padding = PaddingMode.PKCS7
             };
             _aesProvider.GenerateIV();
             _aesProvider.GenerateKey();
             _aesDecryptor = _aesProvider.CreateDecryptor();
             _aesEncryptor = _aesProvider.CreateEncryptor();
+            ConsoleUtils.Info("Encryption set up successfully");
         }
 
         public byte[] GetKeyAES()
@@ -36,14 +35,37 @@ namespace MMOServer.Encryption
             return _aesProvider.Key;
         }
 
-        public byte[] DecryptDataAES(byte[] data)
+        public byte[] GetIVAes()
         {
-            return _aesDecryptor.TransformFinalBlock(data, 0, data.Length);
+            return _aesProvider.IV;
         }
 
-        public byte[] EncryptDataAES(byte[] data)
+        public byte[] EncryptDataAES(byte[] block)
         {
-            return _aesEncryptor.TransformFinalBlock(data, 0, data.Length);
+            return _aesEncryptor.TransformFinalBlock(block, 0, block.Length); //TODO: FIND OUT WHETHER USING THIS IS ANY DIFFERENT FROM USING A STREAM
+            //using (MemoryStream memoryStream = new MemoryStream())
+            //{
+            //    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, _aesEncryptor, CryptoStreamMode.Write))
+            //    {
+            //        cryptoStream.Write(block, 0, block.Length);
+            //        cryptoStream.FlushFinalBlock();
+            //        return memoryStream.ToArray();
+            //    }
+            //}
+        }
+
+        public byte[] DecryptDataAES(byte[] block)
+        {
+            return _aesDecryptor.TransformFinalBlock(block, 0, block.Length);
+            //using (MemoryStream memoryStream = new MemoryStream(block))
+            //{
+            //    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, _aesDecryptor, CryptoStreamMode.Read))
+            //    {
+            //        var output = new byte[block.Length];
+            //        cryptoStream.Read(output, 0, output.Length);
+            //        return output;
+            //    }
+            //}
         }
     }
 }

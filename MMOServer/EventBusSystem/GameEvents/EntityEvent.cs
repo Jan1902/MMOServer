@@ -5,6 +5,8 @@ namespace MMOServer.EventBusSystem.GameEvents
 {
     class EntityEvent : GameEvent
     {
+        public EntityEventType EventType { get; set; }
+
         public Vector Position { get; set; }
         public Vector Rotation { get; set; }
 
@@ -17,6 +19,16 @@ namespace MMOServer.EventBusSystem.GameEvents
 
         public int WorldId { get; set; }
 
-        public EntityEvent(EventType type) : base (type) { }
+        public EntityEvent(EntityEventType type)
+        {
+            EventType = type;
+        }
+    }
+
+    public enum EntityEventType
+    {
+        EntityMoved,
+        EntityDestroyed,
+        EntitySpawned
     }
 }

@@ -2,18 +2,6 @@
 {
     class GameEvent
     {
-        public EventType EventType { get; private set; }
-
-        public GameEvent(EventType type)
-        {
-            EventType = type;
-        }
-    }
-
-    public enum EventType
-    {
-        EntityMoved,
-        EntityDestroyed,
-        EntitySpawned
+        //Just for grouping
     }
 }
