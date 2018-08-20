@@ -1,4 +1,6 @@
 ﻿using MMOServer.ConsoleStuff;
+using MMOServer.Other;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace MMOServer.Encryption
@@ -21,7 +23,7 @@ namespace MMOServer.Encryption
                 KeySize = 256,
                 BlockSize = 128,
                 Mode = CipherMode.CBC,
-                Padding = PaddingMode.PKCS7
+                Padding = PaddingMode.PKCS7,
             };
             _aesProvider.GenerateIV();
             _aesProvider.GenerateKey();
@@ -56,16 +58,21 @@ namespace MMOServer.Encryption
 
         public byte[] DecryptDataAES(byte[] block)
         {
-            return _aesDecryptor.TransformFinalBlock(block, 0, block.Length);
-            //using (MemoryStream memoryStream = new MemoryStream(block))
-            //{
-            //    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, _aesDecryptor, CryptoStreamMode.Read))
-            //    {
-            //        var output = new byte[block.Length];
-            //        cryptoStream.Read(output, 0, output.Length);
-            //        return output;
-            //    }
-            //}
+            //var data = _aesDecryptor.TransformFinalBlock(block, 0, block.Length);
+            //System.Console.WriteLine(Utils.GetHexString(block));
+            //System.Console.WriteLine(Utils.GetHexString(data));
+            //return data;
+            using (MemoryStream memoryStream = new MemoryStream(block))
+            {
+                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, _aesDecryptor, CryptoStreamMode.Read))
+                {
+                    var output = new byte[block.Length];
+                    cryptoStream.Read(output, 0, output.Length);
+                    System.Console.WriteLine(Utils.GetHexString(block));
+                    System.Console.WriteLine(Utils.GetHexString(output));
+                    return output;
+                }
+            }
         }
     }
 }

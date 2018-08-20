@@ -4,6 +4,7 @@ using MMOServer.ConsoleStuff;
 using MMOServer.Database;
 using MMOServer.Encryption;
 using MMOServer.EventBusSystem;
+using MMOServer.EventBusSystem.GameEvents;
 using MMOServer.Game;
 using MMOServer.Game.Entities;
 using MMOServer.Networking.Packets;
@@ -27,6 +28,7 @@ namespace MMOServer.Networking
         public PacketHandlerManager PacketHandlerManager { get; private set; }
         public PacketSenderManager PacketSenderManager { get; private set; }
         public LoginManager LoginManager { get; set; }
+        public EventNotifyManager EventNotifyManager { get; set; }
 
         public ConsoleManager ConsoleManager { get; private set; }
         public ConfigManager ConfigManager { get; private set; }
@@ -50,10 +52,11 @@ namespace MMOServer.Networking
             Connections = new List<ClientConnectionInfo>();
             Logger.Initialize();
 
+            LoginManager = new LoginManager(this);
+            EventNotifyManager = new EventNotifyManager(this);
+
             PacketHandlerManager = new PacketHandlerManager(this);
             PacketSenderManager = new PacketSenderManager(this);
-            LoginManager = new LoginManager(this);
-
             ConsoleManager = new ConsoleManager(this);
             ConfigManager = new ConfigManager();
             DatabaseManager = new DatabaseManager(this);
@@ -68,7 +71,8 @@ namespace MMOServer.Networking
             var managers = new List<IGameManager>();
             managers.AddRange(Worlds.Select(w => w.EntityManager));
             managers.Add(LoginManager);
-            EventBus = new EventBus(this, managers);
+            managers.Add(EventNotifyManager);
+            EventBus = new EventBus(managers);
 
             _host = new Host();
             _host.InitializeServer(ConfigManager.Settings.Port, ConfigManager.Settings.MaxPlayers);
@@ -144,6 +148,11 @@ namespace MMOServer.Networking
 
                         case EventType.Disconnect:
                             ConsoleUtils.Info("Client on {0} disconnected", enetEvent.Peer.GetRemoteAddress());
+                            var destroyRequest = new EntityEvent(EntityEventType.EntityDestroyRequest)
+                            {
+                                EntityID = GetConnectionInfoByPeer(enetEvent.Peer).Player.EntityID
+                            };
+                            EventBus.PublishEvent(destroyRequest);
                             Connections.Remove(GetConnectionInfoByPeer(enetEvent.Peer));
                             break;
 

@@ -37,6 +37,7 @@ namespace MMOServer.Networking.Packets
             if (!_handlers.ContainsKey((PacketOP)data[0]))
             {
                 ConsoleUtils.Warning("Received invalid packet from client on {0} with Packet OP {1}", connection.Peer.GetRemoteAddress(), data[0]);
+                //TODO: FIX THAT THE ENCRYPTION IS WRONG WHEN A CLIENT CONNECTS FOR THE SECOND TIME WHILE THE SERVER IS RUNNING
                 return;
             }
 

@@ -8,6 +8,7 @@ namespace MMOServer.Networking.Packets
         EncryptionResponse = 0x03,
         LoginRequest = 0x04,
         LoginResponse = 0x05,
-        EntitySpawn = 0x06
+        EntitySpawn = 0x06,
+        PlayerSpawn = 0x07
     }
 }

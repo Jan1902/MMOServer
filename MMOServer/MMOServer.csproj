@@ -82,7 +82,9 @@
     <Compile Include="Game\World.cs" />
     <Compile Include="Networking\ChannelID.cs" />
     <Compile Include="Networking\ClientConnectionInfo.cs" />
+    <Compile Include="Networking\EventNotifyManager.cs" />
     <Compile Include="Networking\GameServer.cs" />
+    <Compile Include="Networking\Packets\PacketDefinitions\CB\PlayerSpawn.cs" />
     <Compile Include="Other\Utils.cs" />
     <Compile Include="Networking\Packets\Handlers\LoginRequestHandler.cs" />
     <Compile Include="Networking\Packets\PacketDefinitions\CB\LoginResponse.cs" />

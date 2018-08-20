@@ -108,23 +108,36 @@ namespace MMOServer.Networking.Packets
             var entitySpawn = new EntitySpawn
             {
                 EntityID = entity.EntityID,
-                Position = entity.Position,
-                Rotation = entity.Rotation
+                Position = entity.Position, //TODO: CREATE PROPER PACKET STRUCTURE FOR THIS
+                Rotation = entity.Rotation,
             };
 
-            //GroupSend(_gameServer.GetEntitiesWorld(entity).EntityManager.Players.Select(p => p.Connection).ToList(), entitySpawn.Create(), ChannelID.Gameplay, true);
             GroupSend(connections, entitySpawn.Create(), ChannelID.Gameplay, true);
 
             ConsoleUtils.Info("Broadcasted entity spawn");
         }
 
-        public void SendLoginResponse(ClientConnectionInfo connection, LoginResponseCode responseCode, string sceneName, int entityID)
+        public void SendPlayerSpawn(List<ClientConnectionInfo> connections, Player player)
+        {
+            var entitySpawn = new PlayerSpawn
+            {
+                EntityID = player.EntityID,
+                Position = player.Position,
+                Rotation = player.Rotation,
+                Name = player.Username
+            };
+
+            GroupSend(connections, entitySpawn.Create(), ChannelID.Gameplay, true);
+
+            ConsoleUtils.Info("Broadcasted player spawn");
+        }
+
+        public void SendLoginResponse(ClientConnectionInfo connection, LoginResponseCode responseCode, string sceneName)
         {
             var loginResponse = new LoginResponse
             {
                 ResponseCode = responseCode,
                 SceneName = sceneName,
-                EntityID = entityID
             };
 
             DefaultSend(connection, loginResponse.Create(), ChannelID.Handshaking, true);

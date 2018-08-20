@@ -4,7 +4,6 @@ namespace MMOServer.Networking.Packets.PacketDefinitions.CB
     {
         public LoginResponseCode ResponseCode { get; set; }
         public string SceneName { get; set; }
-        public int EntityID { get; set; }
 
         public LoginResponse() : base(PacketOP.LoginResponse) { }
 
@@ -12,7 +11,6 @@ namespace MMOServer.Networking.Packets.PacketDefinitions.CB
         {
             Write((byte)ResponseCode);
             Write(SceneName);
-            Write(EntityID);
             return Bytes.ToArray();
         }
     }

@@ -8,12 +8,10 @@ namespace MMOServer.EventBusSystem
     {
         private List<IGameManager> _managers;
 
-        private GameServer _gameServer;
         private List<GameEvent> _gameEvents = new List<GameEvent>();
 
-        public EventBus(GameServer gameServer, List<IGameManager> managers)
+        public EventBus(List<IGameManager> managers)
         {
-            _gameServer = gameServer;
             _managers = managers;
         }
 

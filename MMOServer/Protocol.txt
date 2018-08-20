@@ -24,12 +24,11 @@
 
 	- LoginRequest			0x04 SB
 		string	Username
-		string  PasswordHash
+		byte[]  PasswordHash
 
 	- LoginResponse			0x05 CB
 		byte	LoginResponseCode
 		string	SceneName
-		int		EntityID
 
 	- EntitySpawn			0x06 CB
 		int		EntityID
@@ -39,3 +38,13 @@
 		float	RotationX
 		float	RotationY
 		flaot	RotationZ
+
+	- PlayerSpawn			0x07 CB
+		int		EntityID
+		float	PositionX
+		float	PositionY
+		float	PositionZ
+		float	RotationX
+		float	RotationY
+		flaot	RotationZ
+		string	Name

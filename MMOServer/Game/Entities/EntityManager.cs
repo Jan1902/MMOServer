@@ -48,23 +48,47 @@ namespace MMOServer.Game.Entities
             var player = new Player(connection, _gameServer.NextEntityID, pos, rot, name, level, experience);
             connection.Player = player;
             Entities.Add(player);
-            _gameServer.PacketSenderManager.SendEntitySpawn(Players.Select(p => p.Connection).ToList(), player);
+
+            var entitySpawnEvent = new EntityEvent(EntityEventType.EntitySpawned)
+            {
+                Entity = player
+            };
+
+            _gameServer.EventBus.PublishEvent(entitySpawnEvent);
+            //TODO: ADD THE SET_HEALTH STUFF ASWELL
+        }
+
+        private void DestroyEntity(int entityId)
+        {
+            Entities.Remove(Entities.Where(e => e.EntityID == entityId).FirstOrDefault());
+
+            var entityDestroyEvent = new EntityEvent(EntityEventType.EntityDestroy)
+            {
+                EntityID = entityId
+            };
         }
 
         public void HandleGameEvent(GameEvent gameEvent)
         {
             if (gameEvent is EntityEvent entityEvent)
             {
+                if (entityEvent.WorldId != _world.WorldId)
+                    return;
+
                 switch (entityEvent.EventType)
                 {
-                    case EntityEventType.EntitySpawned:
-                        if (entityEvent.WorldId != _world.WorldId)
-                            return;
-                        SpawnPlayer(entityEvent.Connection, entityEvent.Position, entityEvent.Rotation, entityEvent.Name, entityEvent.Level, entityEvent.Experience);
-                        ConsoleUtils.Info("Entity Spawned event handled on Entity Manager");
+                    case EntityEventType.EntitySpawnRequest:
+                        if(entityEvent.EntityType == EntityType.Player)
+                            SpawnPlayer(entityEvent.Connection, entityEvent.Position, entityEvent.Rotation, entityEvent.Name, entityEvent.Level, entityEvent.Experience);
+                        ConsoleUtils.Info("Entity Spawn Request event handled on Entity Manager");
                         break;
+                    case EntityEventType.EntityDestroyRequest:
+                        DestroyEntity(entityEvent.EntityID);
+                        ConsoleUtils.Info("Entity Destroy Request event handled on Entity Manager");
+                        break;
+
                     default:
-                        ConsoleUtils.Warning("Invalid internal Game Event on EntityManager");
+                        //Just for CodeCracker to not cry
                         break;
                 }
             }
